@@ -24,6 +24,11 @@ import jakarta.validation.Valid;
 
 /**
  * Controller para manutenção de livros descartados.
+ * <br><br>
+ * Nível de Acesso: USER
+ * 
+ * @since 1.0
+ * @author Leandro Ap. de Almeida
  */
 @RestController
 @RequestMapping(value = "/discardedbooks")
