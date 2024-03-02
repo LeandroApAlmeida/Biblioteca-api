@@ -30,8 +30,6 @@ import jakarta.validation.Valid;
 
 /**
  * Controller para cadastro e manutenção de livros do acervo pessoal.
- * <br><br>
- * Nível de Acesso: USER
  * 
  * @since 1.0
  * @author Leandro Ap. de Almeida
@@ -78,9 +76,12 @@ public class BookController {
 	/**
 	 * Cadastrar um novo livro no acervo. Um livro pode ser tanto no formato físico
 	 * quanto digital.
+	 * <br><br>
+	 * Nível de Acesso: USER
 	 * @param bookDto Texto em formato JSON.
 	 * @param cover Arquivo com a capa do livro.
 	 * @return Resposta padrão.
+	 * @category teste
 	 */
 	@PostMapping
 	public ResponseEntity<Response> saveBook(
@@ -127,7 +128,7 @@ public class BookController {
 	 * @param id Identificador chave primária do livro.
 	 * @param delete Status de exclusão do livro. Se true, exclui. Se false retorna
 	 * o livro (não remoção física do registro no banco de dados).
-	 * @return Resposta padrão
+	 * @return Resposta padrão.
 	 */
 	@DeleteMapping(value = "/{id}/{delete}")
 	public ResponseEntity<Response> deleteBook(
