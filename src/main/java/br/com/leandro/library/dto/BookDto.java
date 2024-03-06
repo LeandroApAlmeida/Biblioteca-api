@@ -31,13 +31,10 @@ public record BookDto(
 
     String summary,
     
-    @JsonFormat(pattern = JSonFormat.DATE_FORMAT)
     LocalDateTime acquisitionDate,
 
-    @JsonFormat(pattern = JSonFormat.DATE_FORMAT)
     LocalDateTime registrationDate,
 
-    @JsonFormat(pattern = JSonFormat.DATE_FORMAT)
     LocalDateTime lastUpdateDate
 		
 ) {}

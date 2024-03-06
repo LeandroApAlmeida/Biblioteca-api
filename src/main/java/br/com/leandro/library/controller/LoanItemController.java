@@ -1,6 +1,7 @@
 package br.com.leandro.library.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +23,11 @@ import br.com.leandro.library.response.Response;
 import br.com.leandro.library.service.LoanItemService;
 import jakarta.validation.Valid;
 
+/**
+ * Controller para a manutenção de itens de empréstimo.
+ * @since 1.0
+ * @author Leandro Ap. de Almeida
+ */
 @RestController
 @RequestMapping(value = "/loanitems")
 public class LoanItemController {
@@ -31,20 +37,39 @@ public class LoanItemController {
 	private LoanItemService loanItemService;
 	
 	
+	/**
+	 * Salvar item de empréstimo.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
+	 * @param loanItemDtoList Lista com o itens de empréstimo a serem cadastrados.
+	 * @return Lista de resposta padrão, uma para cada item passado para o método.
+	 */
 	@PostMapping
-	public ResponseEntity<Response> saveLoanItem(
-		@RequestBody @Valid LoanItemDto loanItemDto
+	public ResponseEntity<List<Response>> saveLoanItem(
+		@RequestBody @Valid List<LoanItemDto> loanItemDtoList
 	) {
-		LoanItem loanItem = loanItemService.saveLoanItem(loanItemDto);
-		Response resp = new Response();
-		resp.setId(loanItem.getLoan().getId().toString());
-		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("Cadastrado com sucesso");
-		resp.setTime(LocalDateTime.now());
-		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
+		List<LoanItem> loanItemList = loanItemService.saveLoanItem(loanItemDtoList);
+		List<Response> responseList = new ArrayList<>(loanItemList.size());
+		for (LoanItem loanItem : loanItemList) {
+			Response resp = new Response();
+			resp.setId(loanItem.getLoan().getId().toString());
+			resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
+			resp.setMessage("Cadastrado com sucesso");
+			resp.setTime(LocalDateTime.now());
+			responseList.add(resp);
+		}
+		return ResponseEntity.status(HttpStatus.CREATED).body(responseList);
 	}
 	
 	
+	/**
+	 * Atualizar os dados do item de empréstimo.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
+	 * @param id Identificador chave primária.
+	 * @param loanItemDto Dados do item de empréstimo.
+	 * @return Resposta padrão.
+	 */
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<Response> updateLoanItem(
 		@PathVariable("id") UUID id, 
@@ -60,6 +85,14 @@ public class LoanItemController {
 	}
 	
 	
+	/**
+	 * Excluir o item de empréstimo.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
+	 * @param idLoan Identificador chave primária do empréstimo.
+	 * @param idBook Identificador chave primária do livro.
+	 * @return Resposta padrão.
+	 */
 	@DeleteMapping(value = "/{idLoan}/{idBook}")
 	public ResponseEntity<Response> deleteLoanItem(
 		@PathVariable("idLoan") UUID idLoan,
@@ -75,6 +108,13 @@ public class LoanItemController {
 	}
 	
 	
+	/**
+	 * Obter todos os itens de um determinado empréstimo.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
+	 * @param idLoan Identificador chave primária do empréstimo.
+	 * @return Lista com os itens de empréstimo.
+	 */
 	@GetMapping(value = "/{idLoan}")
 	public ResponseEntity<List<LoanItem>> getAllLoanItems(
 		@PathVariable("idLoan") UUID idLoan

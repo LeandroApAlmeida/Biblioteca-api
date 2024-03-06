@@ -14,9 +14,6 @@ import br.com.leandro.library.service.BookFormatService;
 
 /**
  * Controller para recuperação de dados de formato de livro.
- * <br><br>
- * Nível de Acesso: USER
- * 
  * @since 1.0
  * @author Leandro Ap. de Almeida
  */
@@ -31,6 +28,8 @@ public class BookFormatController {
 	
 	/**
 	 * Obter todos os formatos de livro cadastrados no banco de dados.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
 	 * @return Lista com todos os formatos de livro cadastrado no banco de dados.
 	 */
 	@GetMapping
@@ -44,6 +43,8 @@ public class BookFormatController {
 	/**
 	 * Obter um formato de livro específico de acordo com o identificador
 	 * chave primária.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
 	 * @param id Identificador chave primária.
 	 * @return Dados do formato de livro pesquisado.
 	 */

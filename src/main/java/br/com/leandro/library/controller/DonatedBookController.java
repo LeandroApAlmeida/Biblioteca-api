@@ -20,10 +20,14 @@ import br.com.leandro.library.dto.DonatedBookDto;
 import br.com.leandro.library.model.DonatedBook;
 import br.com.leandro.library.response.Response;
 import br.com.leandro.library.service.DonatedBookService;
+import br.com.leandro.library.service.LogService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 /**
  * Controller para manutenção de livros doados.
+ * @since 1.0
+ * @author Leandro Ap. de Almeida
  */
 @RestController
 @RequestMapping(value = "/donatedbooks")
@@ -33,18 +37,29 @@ public class DonatedBookController {
 	@Autowired
 	private DonatedBookService donatedBookService;
 	
+	@Autowired
+	private LogService logService;
+	
 	
 	/**
 	 * Salvar dados de um livro doado.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
 	 * @param donatedBookDto Dados do livro doado.
 	 * @return Dados do livro doado.
 	 */
 	@PostMapping
 	public ResponseEntity<Response> saveDonatedBook(
-		@RequestBody @Valid DonatedBookDto donatedBookDto
+		@RequestBody @Valid DonatedBookDto donatedBookDto,
+		HttpServletRequest request
 	) {
 		DonatedBook donatedBook = donatedBookService.saveDonatedBook(
 			donatedBookDto
+		);
+		logService.saveLog(
+			request,
+			"Donated book added: " +
+			donatedBook.getBook().getTitle()
 		);
 		Response resp = new Response();
 		resp.setId(donatedBook.getId().toString());
@@ -56,19 +71,27 @@ public class DonatedBookController {
 	
 	
 	/**
-	 * Atualizar dados do livro doado.
+	 * Atualizar dados de um livro doado.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
 	 * @param id Identificador chave primária do livro doado.
 	 * @param donatedBookDto Dados atualizados do livro doado.
-	 * @return Dados atualizados do livro doado.
+	 * @return Resposta padrão.
 	 */
 	@PutMapping(value = "/update/{id}")
 	public ResponseEntity<Response> updateDonatedBook(
 		@PathVariable("id") UUID id, 
-		@RequestBody @Valid DonatedBookDto donatedBookDto
+		@RequestBody @Valid DonatedBookDto donatedBookDto,
+		HttpServletRequest request
 	) {
 		DonatedBook donatedBook = donatedBookService.updateDonatedBook(
 			id,
 			donatedBookDto
+		);
+		logService.saveLog(
+			request,
+			"Donated book updated: " +
+			donatedBook.getBook().getTitle()
 		);
 		Response resp = new Response();
 		resp.setId(donatedBook.getId().toString());
@@ -81,15 +104,23 @@ public class DonatedBookController {
 	
 	/**
 	 * Excluir registro de um livro doado.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
 	 * @param id Identificador chave primária do livro doado.
-	 * @param donatedBookDto
-	 * @return
+	 * @return Resposta padrão.
 	 */
 	@DeleteMapping(value = "/delete/{id}")
 	public ResponseEntity<Response> deleteDonatedBook(
-		@PathVariable("id") UUID id
+		@PathVariable("id") UUID id,
+		HttpServletRequest request
 	) {
+		DonatedBook donatedBook = donatedBookService.getDonatedBook(id);
 		donatedBookService.deleteDonatedBook(id);
+		logService.saveLog(
+			request,
+			"Donated book deleted: " +
+			donatedBook.getBook().getTitle()
+		);
 		Response resp = new Response();
 		resp.setId(id.toString());
 		resp.setStatus(String.valueOf(HttpStatus.OK.value()));
@@ -101,6 +132,8 @@ public class DonatedBookController {
 	
 	/**
 	 * Obter todos os livros que foram doados.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
 	 * @return Lista de todos os livros que foram doados.
 	 */
 	@GetMapping
@@ -113,7 +146,9 @@ public class DonatedBookController {
 	
 	/**
 	 * Obter livro doado de acordo com seu identificador chave primária.
-	 * @param id Identificador chave primária.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
+	 * @param id Identificador chave primária do livro doado.
 	 * @return Dados do livro doado.
 	 */
 	@GetMapping(value = "/{id}")

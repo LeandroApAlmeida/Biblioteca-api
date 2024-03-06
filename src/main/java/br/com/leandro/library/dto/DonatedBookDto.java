@@ -13,10 +13,8 @@ public record DonatedBookDto(
 	
 	String notes,
 	
-	@JsonFormat(pattern = JSonFormat.DATE_FORMAT)
 	LocalDateTime date,
 
-	@JsonFormat(pattern = JSonFormat.DATE_FORMAT)
 	LocalDateTime lastUpdateDate
 	    
 ) {

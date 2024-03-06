@@ -28,7 +28,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 public class Book implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -22,7 +22,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(of = {"loan", "book"})
 public class LoanItem {
 	
 	@Id

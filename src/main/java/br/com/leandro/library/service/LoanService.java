@@ -68,7 +68,9 @@ public class LoanService {
 			id.toString(),
 			"Loan not found."
 		);
-		loanRepository.delete(loanO.get());
+		Loan loan = loanO.get();
+		loan.setDeleted(true);
+		loanRepository.save(loan);
 	}
 	
 	

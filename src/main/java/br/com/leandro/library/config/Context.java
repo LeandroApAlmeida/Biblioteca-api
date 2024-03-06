@@ -1,4 +1,4 @@
-package br.com.leandro.library.system;
+package br.com.leandro.library.config;
 
 /**
  * Define o contexto de execução do servidor.

@@ -1,5 +1,6 @@
 package br.com.leandro.library.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -31,27 +32,32 @@ public class LoanItemService {
 	private BookRepository bookRepository;
 	
 	
-	public LoanItem saveLoanItem(LoanItemDto loanItemDto) {
-		Optional<Loan> loanO = loanRepository.findById(loanItemDto.idloan());
-		if (loanO.isEmpty()) throw new ResourceNotFoundException(
-			loanItemDto.idloan().toString(),
-			"Loan not found."
-		);
-		Optional<Book> bookO = bookRepository.findById(loanItemDto.idBook());
-		if (bookO.isEmpty()) throw new ResourceNotFoundException(
-			loanItemDto.idloan().toString(),
-			"Book not found."
-		);
-		LoanItem loanItem = new LoanItem(
-			loanO.get(),
-			bookO.get(),
-			false,
-			null,
-			loanItemDto.notes(),
-			loanItemDto.lastUpdateDate(),
-			false
-		);
-		return loanItemRepository.save(loanItem);
+	public List<LoanItem> saveLoanItem(List<LoanItemDto> loanItemDtoList) {
+		List<LoanItem> loanItemList = new ArrayList<>(loanItemDtoList.size());
+		for (LoanItemDto loanItemDto : loanItemDtoList) {
+			Optional<Loan> loanO = loanRepository.findById(loanItemDto.idloan());
+			if (loanO.isEmpty()) throw new ResourceNotFoundException(
+				loanItemDto.idloan().toString(),
+				"Loan not found."
+			);
+			Optional<Book> bookO = bookRepository.findById(loanItemDto.idBook());
+			if (bookO.isEmpty()) throw new ResourceNotFoundException(
+				loanItemDto.idloan().toString(),
+				"Book not found."
+			);
+			LoanItem loanItem = new LoanItem(
+				loanO.get(),
+				bookO.get(),
+				false,
+				null,
+				loanItemDto.notes(),
+				loanItemDto.lastUpdateDate(),
+				false
+			);
+			loanItemRepository.save(loanItem);
+			loanItemList.add(loanItem);
+		}
+		return loanItemList;
 	}
 	
 	

@@ -13,10 +13,8 @@ public record PersonDto(
 	
 	String description,
 	
-	@JsonFormat(pattern = JSonFormat.DATE_FORMAT)
 	LocalDateTime registrationDate,
-	
-	@JsonFormat(pattern = JSonFormat.DATE_FORMAT)
+
 	LocalDateTime lastUpdateDate
 	
 ) {

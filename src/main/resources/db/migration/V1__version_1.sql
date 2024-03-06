@@ -389,6 +389,34 @@ CREATE TABLE public.settings (
 );
 
 
+-- Tabela Log
+-- 
+-- Nesta tabela ficarão gravados os registro de log do sistema. O eventos de log
+-- estão relacionados com qualquer evento de consumo de API.
+--
+-- Campos:
+--
+-- id: Identificador chave primária.
+--
+-- id_user: Identificador chave primária do usuário que acessou o servidor.
+-- 
+-- log_time: Data/hora do acesso ao servidor.
+--
+-- log_data: Dados do log.
+--
+-- host_ip: Endereço IP do host que realizou a solicitação. 
+
+CREATE TABLE public.log (
+	id serial NOT NULL,
+	id_user uuid NOT NULL,
+	log_time timestamp(6) NOT NULL,
+	log_data text NOT NULL,
+	host_ip VARCHAR(50) NOT NULL,
+	CONSTRAINT log_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_log_user FOREIGN KEY (id_user) REFERENCES public.user_data(id)
+);
+
+
 
 -- Inserção de valores padrão no banco de dados:
 -- ----------------------------------------------------------------------------

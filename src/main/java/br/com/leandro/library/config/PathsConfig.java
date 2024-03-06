@@ -1,4 +1,4 @@
-package br.com.leandro.library.system;
+package br.com.leandro.library.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * Configuração dos caminhos dos diretórios usados pelo servidor.
  */
 @ConfigurationProperties(prefix = "library.path")
-public class PathConfigurations {
+public class PathsConfig {
 	
 	
 	/**

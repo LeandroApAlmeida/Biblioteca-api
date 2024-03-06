@@ -20,9 +20,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-@EqualsAndHashCode
+@EqualsAndHashCode(of = "id")
 public class BookCover implements Serializable {
-	
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -41,6 +40,5 @@ public class BookCover implements Serializable {
 		this.id = id;
 		this.filePath = filePath;
 	}
-	
 
 }

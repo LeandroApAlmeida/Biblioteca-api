@@ -5,6 +5,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,14 +20,18 @@ import br.com.leandro.library.exception.UserRegistrationException;
 import br.com.leandro.library.model.User;
 import br.com.leandro.library.model.User.Role;
 import br.com.leandro.library.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class UserService implements UserDetailsService {
 	
+	
+    @Autowired
+    private TokenService tokenService;
     
     @Autowired
     private UserRepository userRepository;
-    
+
     
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
@@ -48,7 +55,7 @@ public class UserService implements UserDetailsService {
     	Optional<User> userO = userRepository.findById(id);
     	if (userO.isEmpty()) throw new ResourceNotFoundException(
 			id.toString(),
-			"Usuário não encontrado"
+			"User not found."
 		);
     	User user = userO.get();
     	String encryptedPassword = new BCryptPasswordEncoder().encode(userDto.password());
@@ -58,7 +65,35 @@ public class UserService implements UserDetailsService {
     }
     
     
-    public void deleteUser(UUID id) {
+    public User updateCredentials(UUID id, UserDto userDto, HttpServletRequest request) {
+    	Optional<User> userO = userRepository.findById(id);
+    	if (userO.isEmpty()) throw new ResourceNotFoundException(
+			id.toString(),
+			"User not found."
+		);
+    	User user = userO.get();
+		String token = tokenService.recoverToken(request);
+        if(token != null){
+            String userId = tokenService.validateToken(token);
+            UserDetails userDetails = userRepository.findByUserName(userId);
+            if (userDetails != null) {
+            	if (user == (User)userDetails) {
+	            	String encryptedPassword = new BCryptPasswordEncoder().encode(userDto.password());
+	            	user.setPassword(encryptedPassword);
+	            	user.setUserName(userDto.userName());
+            	} else {
+            		throw new ResourceNotFoundException(
+        				id.toString(),
+        				"Forbidden. I"
+    				);
+            	}
+            }
+        }
+    	return userRepository.save(user);
+    }
+    
+    
+    public User deleteUser(UUID id) {
     	Optional<User> userO = userRepository.findById(id);
     	if (userO.isEmpty()) throw new ResourceNotFoundException(
 			id.toString(),
@@ -74,10 +109,11 @@ public class UserService implements UserDetailsService {
     			"Não é possível excluir usuário administrador."
 			);
     	}
+    	return user;
     }
     
     
-    public void undeleteUser(UUID id) {
+    public User undeleteUser(UUID id) {
     	Optional<User> userO = userRepository.findById(id);
     	if (userO.isEmpty()) throw new ResourceNotFoundException(
 			id.toString(),
@@ -86,6 +122,7 @@ public class UserService implements UserDetailsService {
     	User user = userO.get();
     	user.setEnabled(true);
     	userRepository.save(user);
+    	return user;
     }
     
     

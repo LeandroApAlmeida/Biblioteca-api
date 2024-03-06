@@ -1,4 +1,4 @@
-package br.com.leandro.library.system;
+package br.com.leandro.library.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,9 +14,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import br.com.leandro.library.system.SecurityFilter;
+
 @Configuration
 @EnableWebSecurity
-public class SecurityConfigurations {
+public class SecurityConfig {
     
 	
 	@Autowired
@@ -44,13 +46,19 @@ public class SecurityConfigurations {
         return httpSecurity
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(authorize -> authorize
-	        .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
+        .authorizeHttpRequests(authorize ->
+        	authorize
+	        .requestMatchers(HttpMethod.GET, "/users/login/**").permitAll()
 	        .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
 	        .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
 	        .requestMatchers(HttpMethod.DELETE, "/users").hasRole("ADMIN")
 	        .requestMatchers(HttpMethod.PUT, "/users").hasRole("ADMIN")
 	        .requestMatchers(HttpMethod.PATCH, "/users").hasRole("ADMIN")
+	        .requestMatchers(HttpMethod.POST, "/logs").hasRole("ADMIN")
+	        .requestMatchers(HttpMethod.GET, "/logs").hasRole("ADMIN")
+	        .requestMatchers(HttpMethod.DELETE, "/logs").hasRole("ADMIN")
+	        .requestMatchers(HttpMethod.PUT, "/logs").hasRole("ADMIN")
+	        .requestMatchers(HttpMethod.PATCH, "/logs").hasRole("ADMIN")
 	        .anyRequest().authenticated()
         )
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

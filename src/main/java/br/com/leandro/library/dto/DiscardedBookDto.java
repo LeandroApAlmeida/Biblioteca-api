@@ -11,10 +11,8 @@ public record DiscardedBookDto(
 
 	String reason,
 	
-	@JsonFormat(pattern = JSonFormat.DATE_FORMAT)
 	LocalDateTime date,
 
-	@JsonFormat(pattern = JSonFormat.DATE_FORMAT)
 	LocalDateTime lastUpdateDate
 		
 ) {

@@ -20,13 +20,12 @@ import br.com.leandro.library.dto.DiscardedBookDto;
 import br.com.leandro.library.model.DiscardedBook;
 import br.com.leandro.library.response.Response;
 import br.com.leandro.library.service.DiscardedBookService;
+import br.com.leandro.library.service.LogService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 /**
- * Controller para manutenção de livros descartados.
- * <br><br>
- * Nível de Acesso: USER
- * 
+ * Controller para manutenção de livros descartados. 
  * @since 1.0
  * @author Leandro Ap. de Almeida
  */
@@ -38,18 +37,29 @@ public class DiscardedBookController {
 	@Autowired
 	private DiscardedBookService discardedBookService;
 	
+	@Autowired
+	private LogService logService;
+	
 	
 	/**
 	 * Salvar dados de um livro descartado.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
 	 * @param discardedBookDto Dados do livro descartado.
 	 * @return Resposta padrão.
 	 */
 	@PostMapping
 	public ResponseEntity<Response> saveDiscardedBook(
-		@RequestBody @Valid DiscardedBookDto discardedBookDto
+		@RequestBody @Valid DiscardedBookDto discardedBookDto,
+		HttpServletRequest request
 	) {
 		DiscardedBook discardedBook = discardedBookService.saveDiscardedBook(
 			discardedBookDto
+		);
+		logService.saveLog(
+			request,
+			"Discarded book added: " +
+			discardedBook.getBook().getTitle()
 		);
 		Response resp = new Response();
 		resp.setId(discardedBook.getId().toString());
@@ -61,7 +71,9 @@ public class DiscardedBookController {
 	
 	
 	/**
-	 * Atualizar dados sobre um livro descartado.
+	 * Atualizar dados de um livro descartado.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
 	 * @param id Identificador chave primária do livro descartado.
 	 * @param discardedBookDto Dados para atualização do livro descartado.
 	 * @return Resposta padrão.
@@ -69,9 +81,18 @@ public class DiscardedBookController {
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<Response> updateDiscardedBook(
 		@PathVariable("id") UUID id,
-		@RequestBody @Valid DiscardedBookDto discardedBookDto
+		@RequestBody @Valid DiscardedBookDto discardedBookDto,
+		HttpServletRequest request
 	) {
-		discardedBookService.updateDiscardedBook(id, discardedBookDto);
+		DiscardedBook discardedBook = discardedBookService.updateDiscardedBook(
+			id,
+			discardedBookDto
+		);
+		logService.saveLog(
+			request,
+			"Discarded book updated: " +
+			discardedBook.getBook().getTitle()
+		);
 		Response resp = new Response();
 		resp.setId(discardedBookDto.idBook().toString());
 		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
@@ -82,15 +103,25 @@ public class DiscardedBookController {
 	
 	
 	/**
-	 * Excluir os dados de descarte de um livro.
+	 * Excluir o livro descartado, fazendo com que passe ao estado de livro no
+	 * acervo novamente.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
 	 * @param id Identificador chave primária do livro descartado.
 	 * @return Resposta padrão.
 	 */
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Response> deleteDiscardedBook(
-		@PathVariable("id") UUID id
+		@PathVariable("id") UUID id,
+		HttpServletRequest request
 	) {
+		DiscardedBook discardedBook = discardedBookService.getDiscardedBook(id);
 		discardedBookService.deleteDiscardedBook(id);
+		logService.saveLog(
+			request,
+			"Discarded book deleted: " +
+			discardedBook.getBook().getTitle()
+		);
 		Response resp = new Response();
 		resp.setId(id.toString());
 		resp.setStatus(String.valueOf(HttpStatus.OK.value()));
@@ -102,6 +133,8 @@ public class DiscardedBookController {
 	
 	/**
 	 * Obter todos os livros descartados.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
 	 * @return Lista com todos os livros descartados.
 	 */
 	@GetMapping
@@ -115,6 +148,8 @@ public class DiscardedBookController {
 	/**
 	 * Obter um livro descartado de acordo com seu identificador
 	 * chave primária.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
 	 * @param id Identificador chave primária.
 	 * @return Dados do livro descartado.
 	 */

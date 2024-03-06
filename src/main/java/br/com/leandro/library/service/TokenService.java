@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
 import br.com.leandro.library.model.User;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ public class TokenService {
 	
 	private static final String ISSUER = "library-api";
 	
+	// Deixo a chave no código somente para fins didáticos.
     private String SECRET = "LK45HG6A6J6B66J7OS90C0QW12";
 	
 	
@@ -43,6 +45,13 @@ public class TokenService {
             return "";
         }
     }
-
+    
+    
+    public String recoverToken(HttpServletRequest request){
+        var authHeader = request.getHeader("Authorization");
+        if(authHeader == null) return null;
+        return authHeader.replace("Bearer ", "");
+    }
+    
     
 }

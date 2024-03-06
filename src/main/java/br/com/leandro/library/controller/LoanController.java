@@ -24,6 +24,8 @@ import jakarta.validation.Valid;
 
 /**
  * Controller para manutenção de empréstimos.
+ * @since 1.0
+ * @author Leandro Ap. de Almeida
  */
 @RestController
 @RequestMapping(value = "/loans")
@@ -34,6 +36,13 @@ public class LoanController {
 	private LoanService loanService;
 	
 	
+	/**
+	 * Salvar dados do empréstimo realizado.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
+	 * @param loanDto Dados do empréstimo
+	 * @return Resposta padrão.
+	 */
 	@PostMapping
 	public ResponseEntity<Response> saveLoan(
 		@RequestBody @Valid LoanDto loanDto
@@ -42,12 +51,20 @@ public class LoanController {
 		Response resp = new Response();
 		resp.setId(loan.getId().toString());
 		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("Cadastrado com sucesso");
+		resp.setMessage("Loan registered successfully.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 	}
 	
 	
+	/**
+	 * Atualizar dados do empréstimo realizado.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
+	 * @param id Identificador chave primária.
+	 * @param loanDto Dados do empréstimo.
+	 * @return Resposta padrão.
+	 */
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<Response> updateLoan(
 		@PathVariable(name = "id") UUID id, 
@@ -57,12 +74,19 @@ public class LoanController {
 		Response resp = new Response();
 		resp.setId(id.toString());
 		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("Cadastrado com sucesso");
+		resp.setMessage("Loan updated successfully.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 	}
 	
 	
+	/**
+	 * Excluir o empréstimo. Não há remoção física do registro no banco de dados.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
+	 * @param id Identificador chave primária.
+	 * @return Resposta padrão.
+	 */
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Response> deleteLoan(
 		@PathVariable("id") UUID id
@@ -77,6 +101,12 @@ public class LoanController {
 	}
 	
 	
+	/**
+	 * Obter todos os empréstimos.
+	 * <br><br>
+	 * Nível de Acesso: <b><i>USER</i></b>
+	 * @return Lista com todos os empréstimos.
+	 */
 	@GetMapping
 	public ResponseEntity<List<Loan>> getAllLoans(){
 		return ResponseEntity.status(HttpStatus.OK).body(
@@ -85,6 +115,11 @@ public class LoanController {
 	}
 	
 	
+	/**
+	 * Obter um empréstimo de acordo com seu identificador chave primária.
+	 * @param id Identificador chave primária.
+	 * @return Dados do empréstimo.
+	 */
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Loan> getLoan(
 		@PathVariable("id") UUID id

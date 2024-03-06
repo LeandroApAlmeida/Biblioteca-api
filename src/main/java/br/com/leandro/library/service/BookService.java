@@ -160,7 +160,7 @@ public class BookService {
 	}
 	
 	
-	public void deleteBook(UUID idBook) {
+	public Book deleteBook(UUID idBook) {
 		Optional<Book> bookO = bookRepository.findById(idBook);
 		if (bookO.isEmpty()) throw new ResourceNotFoundException(
 			idBook.toString(),
@@ -169,10 +169,11 @@ public class BookService {
 		var book = bookO.get();
 		book.setDeleted(true);
 		bookRepository.save(book);
+		return book;
 	}
 	
 	
-	public void undeleteBook(UUID idBook) {
+	public Book undeleteBook(UUID idBook) {
 		Optional<Book> bookO = bookRepository.findById(idBook);
 		if (bookO.isEmpty()) throw new ResourceNotFoundException(
 			idBook.toString(),
@@ -181,6 +182,7 @@ public class BookService {
 		var book = bookO.get();
 		book.setDeleted(false);
 		bookRepository.save(book);
+		return book;
 	}
 	
 	

@@ -11,12 +11,10 @@ public record LoanDto(
 
 	UUID idPerson,
 
-	@JsonFormat(pattern = JSonFormat.DATE_FORMAT)
 	LocalDateTime date,
 
 	String notes,
 	
-	@JsonFormat(pattern = JSonFormat.DATE_FORMAT)
 	LocalDateTime lastUpdateDate
 	
 ) {

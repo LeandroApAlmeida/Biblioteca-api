@@ -2,15 +2,14 @@ package br.com.leandro.library.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -18,34 +17,33 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @Entity
-@Table(name = "discarded_book")
+@Table(name = "log")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
-public class DiscardedBook implements Serializable {
+public class Log implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
-	@Id
-	@Column(name = "id_book")
-    private UUID id;
-    
-    @MapsId
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_book")
-    private Book book; 
-	
-	@Column(name = "reason")
-	private String reason;
-	
-	@Column(name = "date", nullable = false)
-	private LocalDateTime date;
-	
-	@Column(name = "last_update_date", nullable = false)
-    private LocalDateTime lastUpdateDate;
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	private int id;
+	
+	@ManyToOne(targetEntity = User.class, optional = false)
+	@JoinColumn(name = "id_user")
+	private User user;
+	
+	@Column(name = "log_time")
+	private LocalDateTime logTime;
+	
+	@Column(name = "log_data")
+	private String logData;
+	
+	@Column(name = "host_ip")
+	private String hostIP;
+	
 }
