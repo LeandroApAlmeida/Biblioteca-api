@@ -68,12 +68,6 @@ import br.com.leandro.library.service.UserService;
 public class UserController {
 	
     
-	@Autowired
-    private AuthenticationManager authenticationManager;
-    
-    @Autowired
-    private TokenService tokenService;
-    
     @Autowired
     private UserService userService;
     
@@ -81,60 +75,8 @@ public class UserController {
 	private LogService logService;
     
     
-    /**
-     * Autenticar o usuário, retornando o token para acesso.
-     * @param userName Nome de usuário.
-     * @param password Senha de acesso.
-     * @return Token.
-     */
-    private String authenticate(String userName, String password) {
-    	String token = null;
-    	UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(
-			userName,
-			password
-		);
-        Authentication authentication = authenticationManager.authenticate(usernamePassword);
-    	if (authentication.isAuthenticated()) {
-    		token = tokenService.generateToken((User) authentication.getPrincipal());
-    	}
-    	return token;
-    }
+    //TODO dar possibilidade de o usuário trocar nome usuário e senha para acesso.
     
-    
-    /**
-     * Fazer o login no sistema. Como a arquitetura é baseada em API Rest, não
-     * será mantida informação de estado de sessão, e, assim que validado o 
-     * usuário, este receberá um token que controlará o acesso aos recursos
-     * do sistema.
-     * <br><br>
-	 * Nível de Acesso: <b><i>USER</i></b>
-     * @param userName Nome de usuário.
-     * @param password Senha de acesso.
-     * @param request Informações sobre a requisição HTTP.
-     * @return Resposta padrão contendo o token.
-     */
-    @GetMapping("/login/{username}/{password}")
-    public ResponseEntity<LoginResponse> login(
-    	@PathVariable("username") String userName,
-    	@PathVariable("password") String password,
-    	HttpServletRequest request
-    ){
-    	String token = authenticate(userName, password);
-    	if (token != null) {
-    		User user = (User) userService.loadUserByUsername(userName);
-    		logService.saveLog(user, request, "Login: " + user.getUsername());
-    		LoginResponse resp = new LoginResponse();
-    		resp.setId(user.getId().toString());
-    		resp.setToken(token);
-    		resp.setTime(LocalDateTime.now());
-    		return ResponseEntity.status(HttpStatus.OK).body(resp);
-    	} else {
-    		throw new ResourceNotFoundException(
-				userName,
-				"Invalid username or password."
-			);
-    	}
-    }
     
     
     /**
@@ -157,7 +99,7 @@ public class UserController {
     	Response resp = new Response();
 		resp.setId(user.getId().toString());
 		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("User registered successfully.");
+		resp.setMessage("User successfully registered.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
     }
@@ -185,58 +127,9 @@ public class UserController {
 		Response resp = new Response();
 		resp.setId(id.toString());
 		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("User updated successfully.");
+		resp.setMessage("User successfully updated.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
-	}
-    
-    
-    /**
-     * Atualizar as credenciais de acesso do usuário. Neste caso, qualquer usuário
-     * tem acesso à funcionalidade, podendo alterar as próprias credenciais de 
-     * acesso.
-     * <br><br>
-	 * Nível de Acesso: <b><i>USER</i></b>
-     * @param id Indentificador chave primária do usuário.
-     * @param userDto Dados do usuário.
-     * @param request Informações sobre a requisição HTTP.
-     * @return Resposta padrão.
-     */
-    @PutMapping("/credentials/{id}")
-	public ResponseEntity<Response> updateCredentials(
-		@PathVariable("id") UUID id,
-		@RequestBody @Valid UserDto userDto,
-		HttpServletRequest request
-	) {
-		User user = userService.updateUser(id, userDto);
-		logService.saveLog(request, "User updated: " + user.getUsername());
-		Response resp = new Response();
-		resp.setId(id.toString());
-		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("User updated successfully.");
-		resp.setTime(LocalDateTime.now());
-		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
-	}
-    
-    
-    @PutMapping("/password/{id}/{oldpassword}/{newpassword}")
-	public ResponseEntity<Response> updatePassword(
-		@PathVariable("id") UUID id,
-		@PathVariable("oldpassword") String oldPassword,
-		@PathVariable("newpassword") String newPassword,
-		HttpServletRequest request
-	) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(null);
-	}
-    
-    
-    @PutMapping("/username/{id}/{newusername}")
-	public ResponseEntity<Response> updateUserName(
-		@PathVariable("id") UUID id,
-		@PathVariable("newusername") String newUserName,
-		HttpServletRequest request
-	) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(null);
 	}
     
     
@@ -252,11 +145,11 @@ public class UserController {
 		if (delete) {
 			user = userService.deleteUser(id);
 			logService.saveLog(request, "User deleted: " + user.getUsername());
-		    resp.setMessage("User deleted successfully.");
+		    resp.setMessage("User successfully deleted.");
 		} else {
 			user = userService.undeleteUser(id);
 			logService.saveLog(request, "User undeleted: " + user.getUsername());
-			resp.setMessage("User undeleted successfully.");
+			resp.setMessage("User successfully undeleted.");
 		}
 		resp.setTime(LocalDateTime.now());
 		resp.setStatus(String.valueOf(HttpStatus.OK.value()));

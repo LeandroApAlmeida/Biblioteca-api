@@ -3,20 +3,23 @@ package br.com.leandro.library.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * Configuração dos caminhos dos diretórios usados pelo servidor.
+ * Configura&ccedil;&atilde;o dos caminhos dos diret&oacute;rios usados pelo servidor.
+ * 
+ * @since 1.0
+ * @author Leandro Ap. de Almeida
  */
 @ConfigurationProperties(prefix = "library.path")
 public class PathsConfig {
 	
 	
 	/**
-	 * Caminho do diretório de arquivos de mídia do servidor no contexto
+	 * Caminho do diret&oacute;rio de arquivos de m&iacute;dia do servidor no contexto
 	 * de desenvolvimento.
 	 */
 	private String mediaDirectory;
 	
 	/**
-	 * Contexto de execução do servidor. Deve ser alterado quando fizer a implantação
+	 * Contexto de execu&ccedil;&atilde;o do servidor. Deve ser alterado quando fizer a implanta&ccedil;&atilde;o
 	 * caso estiver no modo de desenvolvimento.
 	 */
 	private Context context = Context.Development;

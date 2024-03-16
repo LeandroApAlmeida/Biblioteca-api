@@ -49,7 +49,7 @@ public class Book implements Serializable {
 
 	/**Título do livro.*/
     @Column(name = "title", nullable = false)
-    @NotBlank(message = "Nome do livro deve ser preenchido")
+    @NotBlank
     private String title;
 
     /**Subtítulo do livro.*/
@@ -58,17 +58,17 @@ public class Book implements Serializable {
 
     /**Autor do livro.*/
     @Column(name = "author", nullable = false)
-    @NotBlank(message = "Nome do autor deve ser preenchido")
+    @NotBlank
     private String author;
 
     /**Editora do livro.*/
     @Column(name = "publisher", nullable = false)
-    @NotBlank(message = "Nome da editora deve ser preenchido")
+    @NotBlank
     private String publisher;
 
     /**ISBN do livro.*/
     @Column(name = "isbn", nullable = false)
-    @NotBlank(message = "ISBN deve ser preenchido")
+    @NotBlank
     private String isbn;
 
     /**Edição do livro.*/

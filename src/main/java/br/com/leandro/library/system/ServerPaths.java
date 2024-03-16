@@ -36,4 +36,13 @@ public class ServerPaths {
 	}
 	
 	
+	public String getCacheDirectory() {
+		return System.getProperty("java.io.tmpdir");
+	}
+	
+	
+	public File getCacheFile(String fileName) {
+		return  new File(getCacheDirectory() + fileName);
+	}
+	
 }

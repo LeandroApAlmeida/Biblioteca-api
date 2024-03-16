@@ -50,13 +50,13 @@ public class BookController {
 	 * <br><br>
 	 * Nível de Acesso: <b><i>USER</i></b>
 	 * @param bookDto Dados do livro.
-	 * @param cover Arquivo com a capa do livro.
+	 * @param cover Arquivo com a capa do livro (requerido).
 	 * @return Resposta padrão.
 	 */
 	@PostMapping
 	public ResponseEntity<Response> saveBook(
 		@RequestPart(name = "book") @Valid BookDto bookDto,
-		@RequestPart(name = "cover", required = false) MultipartFile cover,
+		@RequestPart(name = "cover") MultipartFile cover,
 		HttpServletRequest request
 	) {
 		Book book = bookService.saveBook(bookDto, cover);
@@ -64,7 +64,7 @@ public class BookController {
 		Response resp = new Response();
 		resp.setId(book.getId().toString());
 		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("Book registered successfully.");
+		resp.setMessage("Book successfully registered.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 	}
@@ -75,15 +75,15 @@ public class BookController {
 	 * <br><br>
 	 * Nível de Acesso: <b><i>USER</i></b>
 	 * @param id Identificador chave primária do livro.
-	 * @param bookJson Texto em formato JSON.
-	 * @param cover Arquivo com a capa do livro.
+	 * @param bookDto Dados do livro.
+	 * @param cover Arquivo com a capa do livro (requerido).
 	 * @return Resposta padrão.
 	 */
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<Response> updateBook(
 		@PathVariable("id") UUID id,
 		@RequestPart(name = "book") @Valid BookDto bookDto,
-		@RequestPart(name = "cover", required = false) MultipartFile cover,
+		@RequestPart(name = "cover") MultipartFile cover,
 		HttpServletRequest request
 	) {
 		Book book = bookService.updateBook(id, bookDto, cover);
@@ -91,7 +91,7 @@ public class BookController {
 		Response resp = new Response();
 		resp.setId(book.getId().toString());
 		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("Book updated successfully.");
+		resp.setMessage("Book successfully updated.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 	}
@@ -117,11 +117,11 @@ public class BookController {
 		Book book = null;
 		if (delete) {
 			book = bookService.deleteBook(id);
-		    resp.setMessage("Book deleted successfully.");
+		    resp.setMessage("Book successfully deleted.");
 		    logService.saveLog(request, "Book deleted: " + book.getTitle());
 		} else {
 			book = bookService.undeleteBook(id);
-			resp.setMessage("Book undeleted successfully.");
+			resp.setMessage("Book successfully undeleted.");
 			logService.saveLog(request, "Book undeleted: " + book.getTitle());
 		}
 		resp.setTime(LocalDateTime.now());
@@ -145,11 +145,63 @@ public class BookController {
 	
 	
 	/**
-	 * Obtém todos os livros cadastrados no banco de dados baseado em um status
+	 * Obtém todos os livros cadastrados no banco de dados baseado no status
 	 * de busca.
 	 * <br><br>
 	 * Nível de Acesso: <b><i>USER</i></b>
-	 * @param status Status da busca.
+	 * @param status Status da busca. Os status são:
+	 * 
+	 * <br>
+	 * 
+	 * <ul>
+	 * 
+	 * <li>
+	 * <b>all</b>: Todos os livros no banco de dados.
+	 * </li>
+	 * 
+	 * <br>
+	 * 
+	 * <li>
+	 * <b>deleted</b>: Todos os livros que estão excluídos.
+	 * </li>
+	 * 
+	 * <br>
+	 * 
+	 * <li>
+	 * <b>!deleted</b>: Todos os livros que não estão excluídos.
+	 * </li>
+	 * 
+	 * <br>
+	 * 
+	 * <li>
+	 * <b>discarded</b>: Todos os livros que estão descartados.
+	 * </li>
+	 * 
+	 * <br>
+	 * 
+	 * <li>
+	 * <b>!deleted</b>: Todos os livros que não estão descartados.
+	 * </li>
+	 * 
+	 * <br>
+	 * 
+	 * <li>
+	 * <b>donated</b>: Todos os livros que estão doados.
+	 * </li>
+	 * 
+	 * <br>
+	 * 
+	 * <li>
+	 * <b>!donated</b>: Todos os livros que não estão doados.
+	 * </li>
+	 * 
+	 * <br>
+	 * 
+	 * <li>
+	 * <b>collection</b>: Todos os livros que estão no acervo.
+	 * </li>
+	 * 
+	 * </ul>
 	 * @return Lista com todos os livros cadastrados no banco de dados baseado
 	 * no status.
 	 */

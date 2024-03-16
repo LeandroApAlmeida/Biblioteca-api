@@ -1,31 +1,33 @@
 -- Versão 1.0. Inclui manutenção do acervo pessoal e ficha de leitura.
 
 
+
+
 -- Tabela Dados do Usuário
+-- ----------------------------------------------------------------------------
 --
--- Nesta tabela ficarão gravados os dados de acesso dos usuários.
--- No final deste script é inserido o usuário administrador do sistema,
--- exigido para o cadastro dos demais usuários. Somente o administrador
--- terá acesso via API às funcionalidades de cadastro e manutenção de
--- outros usuários, exceto o login e alteração de nome de usuário e Senha
--- de acesso da própria conta, que poderá ser feito por qualquer usuário.
+-- Nesta tabela ficarão gravados os dados para acesso dos usuários. No final deste
+-- script é inserido o usuário administrador do sistema, exigido para o cadastro
+-- dos demais usuários. Somente o administrador terá acesso via API às funcionalidades
+-- de cadastro e manutenção de outros usuários, exceto o login e alteração de nome
+-- de usuário e Senha de acesso da própria conta, que poderá ser feito por qualquer
+-- usuário.
 --
 -- Campos:
 --
--- id: Identificador chave primária do usuário. Este identificador
--- é no formato UUID (Universally Unique Identifier) e é gerado no
--- cadastro do usuário pelo próprio Postgre.
+-- id: Identificador chave primária do usuário. Este identificador é no formato UUID
+-- (Universally Unique Identifier) e é gerado no cadastro do usuário pelo próprio 
+-- Postgre.
 --
 -- user_name: Nome de usuário para acesso ao sistema.
 --
 -- password: Senha para acesso ao sistema.
 --
--- role: Função do usuário. Pode ser ADMIN (Administrador) ou USER
--- (usuário comum). No caso de ADMIN, tem acesso irrestrito ao sistema.
+-- role: Função do usuário. Pode ser ADMIN (Administrador) ou USER (usuário comum).
+-- No caso de ADMIN, tem acesso irrestrito ao sistema.
 --
--- is_enabled: Esta flag indica se o usuário tem permissão de acesso
--- ao sistema (true) ou não tem permissão (false). Ela será verificada
--- a cada requisição à API.
+-- is_enabled: Esta flag indica se o usuário tem permissão de acesso ao sistema (true)
+-- ou não tem permissão (false). Ela será verificada a cada requisição à API.
 
 CREATE TABLE public.user_data (
 	id uuid NOT NULL DEFAULT gen_random_uuid(),
@@ -37,10 +39,13 @@ CREATE TABLE public.user_data (
 );
 
 
+
+
 -- Tabela Formato do Livro
+-- ----------------------------------------------------------------------------
 --
--- Nesta tabela ficarão gravados os formatos de livros, revistas e 
--- periódicos. Os formatos padrão são inseridos no final do script.
+-- Nesta tabela ficarão gravados os formatos de livros, revistas e periódicos.
+-- Os formatos padrão são inseridos no final do script.
 --
 -- Campos:
 -- 
@@ -55,18 +60,21 @@ CREATE TABLE public.book_format (
 );
 
 
+
+
 -- Tabela Capa do Livro
+-- ----------------------------------------------------------------------------
 --
--- A capa do livro geralmente é um arquivo jpeg ou png que pode ter de
--- alguns kilobytes até alguns megabytes de tamanho. Este arquivo não ficará
--- gravado no banco de dados em alguma columa Blob, mas será copiado
--- para um diretório padrão no servidor, e o nome do arquivo dentro deste
--- diretório é que será gravado nesta tabela. Desta forma, o banco de dados
--- ficará mais leve, e a cada vez que fizer uma consulta pelos livros que 
--- estão cadastrados, não precisa se preocupar em tratar no código para não
--- carregar a imagem quando precisa somente dos demais dados do livro, como
--- para preencher uma lista de livros numa página HTML, por exemplo, evitando
--- com isso o desperdício de dados e agilizando o carregamento da página.
+-- A capa do livro geralmente é um arquivo jpeg ou png que pode ter de alguns 
+-- kilobytes até alguns megabytes de tamanho. Este arquivo não ficará gravado no
+-- banco de dados em alguma columa Blob, mas será copiado para um diretório padrão
+-- no servidor, e o nome do arquivo dentro deste diretório é que será gravado nesta
+-- tabela. Desta forma, o banco de dados ficará mais leve, e a cada vez que fizer
+-- uma consulta pelos livros que estão cadastrados, não precisa se preocupar em 
+-- tratar no código para não carregar a imagem quando precisa somente dos demais
+-- dados do livro, como para preencher uma lista de livros numa página HTML, por 
+-- exemplo, evitando com isso o desperdício de dados e agilizando o carregamento
+-- da página.
 --
 -- Campos:
 --
@@ -81,7 +89,10 @@ CREATE TABLE public.book_cover (
 );
 
 
+
+
 -- Tabela Livro
+-- ----------------------------------------------------------------------------
 --
 -- Nesta tabela ficarão gravados todos os dados de um livro, revista ou periódico.
 -- Estes podem estar no formato físico ou digital.
@@ -121,9 +132,8 @@ CREATE TABLE public.book_cover (
 --
 -- last_update_date: Data da última atualização do registro.
 --
--- is_deleted: Esta Flag indica se o livro está excluído (true) ou 
--- não está excluído (false). Não há a remoção física do registro no
--- banco de dados.
+-- is_deleted: Esta Flag indica se o livro está excluído (true) ou não está excluído
+-- (false). Não há a remoção física do registro no banco de dados.
 
 CREATE TABLE public.book (
 	id uuid NOT NULL,
@@ -149,10 +159,13 @@ CREATE TABLE public.book (
 );
 
 
+
+
 -- Tabela Pessoa
+-- ----------------------------------------------------------------------------
 --
--- Nesta tabela ficarão gravados os dados de pessoas para quem foram feitas 
--- doações ou empréstimos de livros físicos.
+-- Nesta tabela ficarão gravados os dados de pessoas para quem foram feitas doações
+-- ou empréstimos de livros físicos.
 --
 -- Campos:
 --
@@ -166,9 +179,8 @@ CREATE TABLE public.book (
 --
 -- last_update_date: Data da última atualização do registro.
 --
--- is_deleted: Esta Flag indica se a pessoa está excluída (true) ou 
--- não está excluída (false). Não há a remoção física do registro no
--- banco de dados.
+-- is_deleted: Esta Flag indica se a pessoa está excluída (true) ou não está excluída
+-- (false). Não há a remoção física do registro no banco de dados.
 
 CREATE TABLE public.person (
 	id uuid NOT NULL,
@@ -181,7 +193,10 @@ CREATE TABLE public.person (
 );
 
 
+
+
 -- Tabela Empréstimo
+-- ----------------------------------------------------------------------------
 --
 -- Nesta tabela ficarão gravados os dados de empréstimo de livros físicos realizados.
 -- O empréstimo, no contexto desta API, é uma relação em que uma pessoa pode tomar
@@ -200,9 +215,8 @@ CREATE TABLE public.person (
 --
 -- last_update_date: Data da última atualização do registro.
 --
--- is_deleted: Esta Flag indica se o empréstimo está excluído (true) ou 
--- não está excluído (false). Não há a remoção física do registro no
--- banco de dados.
+-- is_deleted: Esta Flag indica se o empréstimo está excluído (true) ou não está 
+-- excluído (false). Não há a remoção física do registro no banco de dados.
 
 CREATE TABLE public.loan (
 	id uuid NOT NULL,
@@ -216,10 +230,13 @@ CREATE TABLE public.loan (
 );
 
 
+
+
 -- Tabela Item de Empréstimo
+-- ----------------------------------------------------------------------------
 --
--- Nesta tabela estarão gravados todos os livros físicos tomados em empréstimo por
--- alguma pessoa.
+-- Nesta tabela estarão gravados todos os livros físicos tomados em empréstimo
+-- por alguma pessoa.
 --
 -- Campos:
 --
@@ -238,9 +255,8 @@ CREATE TABLE public.loan (
 -- returned: Esta Flag indica se o livro já foi devolvido (true) ou não foi devolvido
 -- (false).
 --
--- is_deleted: Esta Flag indica se o item deempréstimo está excluído (true) ou 
--- não está excluído (false). Não há a remoção física do registro no
--- banco de dados.
+-- is_deleted: Esta Flag indica se o item deempréstimo está excluído (true) ou
+-- não está excluído (false). Não há a remoção física do registro no banco de dados.
 
 CREATE TABLE public.loan_item (
 	id_book uuid NOT NULL,
@@ -256,15 +272,19 @@ CREATE TABLE public.loan_item (
 );
 
 
+
+
 -- Tabela Livro Descartado
+-- ----------------------------------------------------------------------------
 --
--- Nesta tabela ficarão gravados os dados sobre os livros físicos que foram descartados
--- do acervo.
+-- Nesta tabela ficarão gravados os dados sobre os livros físicos que foram
+-- descartados do acervo.
 -- 
 -- Campos:
 --
--- id_book: Identificador chave primária. No caso, é também chave estrangeira para a
--- tabela livro. Desta forma se impõe que um livro pode ser descartado somente uma vez. 
+-- id_book: Identificador chave primária. No caso, é também chave estrangeira para
+-- a tabela livro. Desta forma se impõe que um livro pode ser descartado somente 
+-- uma vez. 
 --
 -- reason: Motivo do descarte do livro (dano, liberação de espaço, etc.).
 --
@@ -280,15 +300,18 @@ CREATE TABLE public.discarded_book (
 );
 
 
+
+
 -- Tabela Livro Doado
+-- ----------------------------------------------------------------------------
 --
--- Nesta tabela ficarão gravados os dados sobre os livros físicos que foram doados para
--- alguma pessoa.
+-- Nesta tabela ficarão gravados os dados sobre os livros físicos que foram doados
+-- para alguma pessoa.
 --
 -- Campos:
 --
--- id_book: Identificador chave primária. No caso, é também chave estrangeira para a tabela
--- livro. Desta forma se impõe que um livro pode ser doado somente uma vez.
+-- id_book: Identificador chave primária. No caso, é também chave estrangeira para
+-- a tabela livro. Desta forma se impõe que um livro pode ser doado somente uma vez.
 --
 -- id_person: Chave estrangeira para a pessoa que foi realizada a doação.
 --
@@ -310,11 +333,14 @@ CREATE TABLE public.donated_book (
 );
 
 
+
+
 -- Tabela  Ficha de Leitura
+-- ----------------------------------------------------------------------------
 --
--- Nesta tabela ficarão gravados os dados sobre as leituras realizadas. Funciona como
--- uma ficha de leitura. É nela que serão gravados os dados do app Android de Ficha de
--- Leitura desenvolvido.
+-- Nesta tabela ficarão gravados os dados sobre as leituras realizadas. Funciona
+-- como uma ficha de leitura. É nela que serão gravados os dados do app Android 
+-- de Ficha de Leitura desenvolvido.
 --
 -- Campos:
 --
@@ -332,12 +358,11 @@ CREATE TABLE public.donated_book (
 --
 -- last_update_date: Data da última atualização do registro.
 --
--- reading_completed: Esta Flag indica se a leitura já foi concluída (true) ou ainda não
--- foi concluída (false).
+-- reading_completed: Esta Flag indica se a leitura já foi concluída (true) ou 
+-- ainda não foi concluída (false).
 --
--- is_deleted: Esta Flag indica se o registro está excluído (true) ou 
--- não está excluído (false). Não há a remoção física do registro no
--- banco de dados.
+-- is_deleted: Esta Flag indica se o registro está excluído (true) ou não está excluído
+-- (false). Não há a remoção física do registro no banco de dados.
 
 CREATE TABLE public.reading_record (
 	id uuid NOT NULL,
@@ -354,11 +379,14 @@ CREATE TABLE public.reading_record (
 );
 
 
+
+
 -- Tabela Configurações
+-- ----------------------------------------------------------------------------
 -- 
--- Nesta tabela ficarão gravadas as configurações do usuário. Por exemplo, pode definir
--- com que cores de fonte vai exibir livros emprestados numa lista, também livros doados 
--- ou excluídos do acervo.
+-- Nesta tabela ficarão gravadas as configurações do usuário. Por exemplo, pode
+-- definir com que cores de fonte vai exibir livros emprestados numa lista, também
+-- livros doados ou excluídos do acervo.
 --
 -- Campos:
 --
@@ -389,7 +417,10 @@ CREATE TABLE public.settings (
 );
 
 
+
+
 -- Tabela Log
+-- ----------------------------------------------------------------------------
 -- 
 -- Nesta tabela ficarão gravados os registro de log do sistema. O eventos de log
 -- estão relacionados com qualquer evento de consumo de API.
@@ -418,8 +449,10 @@ CREATE TABLE public.log (
 
 
 
+
 -- Inserção de valores padrão no banco de dados:
 -- ----------------------------------------------------------------------------
+
 
 
 
@@ -449,6 +482,8 @@ INSERT INTO public.book_format(id, description) VALUES (150, 'MOBI');
 INSERT INTO public.book_format(id, description) VALUES (200, 'AZW');
 
 INSERT INTO public.book_format(id, description) VALUES (250, 'OUTRO');
+
+
 
 
 -- Como é uma exigência que o usuário administrador já esteja cadastrado quando

@@ -33,7 +33,7 @@ public class BookFormat implements Serializable {
 	
 	/**Descrição do formato.*/
 	@Column(name = "description", nullable = false)
-	@NotBlank(message = "Descrição deve ser preenchida")
+	@NotBlank
 	private String description;
 
 }

@@ -60,11 +60,11 @@ public class User implements UserDetails {
 	private UUID id;
 	
 	@Column(name = "user_name", unique = true)
-	@NotBlank(message = "User name cannot be empty.")
+	@NotBlank
 	private String userName;
 	
 	@Column(name = "password")
-	@NotBlank(message = "Password cannot be empty.")
+	@NotBlank
 	private String password;
 	
 	@Enumerated(EnumType.STRING)
@@ -90,10 +90,10 @@ public class User implements UserDetails {
 			case ADMIN: {
 				list.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 				list.add(new SimpleGrantedAuthority("ROLE_USER"));
-			}
+			} break;
 			case USER: {
 				list.add(new SimpleGrantedAuthority("ROLE_USER"));
-			}
+			} break;
 		}
 		return list;
 	}

@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.leandro.library.dto.PersonDto;
 import br.com.leandro.library.model.Person;
 import br.com.leandro.library.response.Response;
+import br.com.leandro.library.service.LogService;
 import br.com.leandro.library.service.PersonService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
@@ -30,16 +32,21 @@ public class PersonController {
 	@Autowired
 	private PersonService personService;
 	
+	@Autowired
+	private LogService logService;
+	
 	
 	@PostMapping
 	public ResponseEntity<Response> savePerson(
-		@RequestBody @Valid PersonDto personDto
+		@RequestBody @Valid PersonDto personDto,
+		HttpServletRequest request
 	) {
 		Person person = personService.savePerson(personDto);
+		logService.saveLog(request, "Person added: " + person.getName());
 		Response resp = new Response();
 		resp.setId(person.getId().toString());
 		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("Cadastrado com sucesso");
+		resp.setMessage("Person successfully registered.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 	}
@@ -48,13 +55,15 @@ public class PersonController {
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<Response> updatePerson(
 		@PathVariable("id") UUID id, 
-		@RequestBody @Valid PersonDto personDto
+		@RequestBody @Valid PersonDto personDto,
+		HttpServletRequest request
 	) {
-		personService.updatePerson(id, personDto);
+		Person person = personService.updatePerson(id, personDto);
+		logService.saveLog(request, "Person updated: " + person.getName());
 		Response resp = new Response();
 		resp.setId(id.toString());
 		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("Alterado com sucesso");
+		resp.setMessage("Person successfully updated.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 	}
@@ -63,16 +72,20 @@ public class PersonController {
 	@DeleteMapping(value = "/{id}/{delete}")
 	public ResponseEntity<Response> deletePerson(
 		@PathVariable("id") UUID id,
-		@PathVariable("delete") boolean delete
+		@PathVariable("delete") boolean delete,
+		HttpServletRequest request
 	) {
 		Response resp = new Response();
+		Person person = null;
 		resp.setId(id.toString());
 		if (delete) {
-			personService.deletePerson(id);
-			resp.setMessage("Excluído com sucesso");
+			person = personService.deletePerson(id);
+			resp.setMessage("Person successfully deleted.");
+			logService.saveLog(request, "Person deleted: " + person.getName());
 		} else {
-			personService.undeletePerson(id);
-			resp.setMessage("Retornado com sucesso");
+			person = personService.undeletePerson(id);
+			resp.setMessage("Person successfully undeleted.");
+			logService.saveLog(request, "Person undeleted: " + person.getName());
 		}
 		resp.setStatus(String.valueOf(HttpStatus.OK.value()));
 		resp.setTime(LocalDateTime.now());

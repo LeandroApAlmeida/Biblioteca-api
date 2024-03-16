@@ -31,11 +31,11 @@ public class Person implements Serializable {
 	private UUID id;
 	
 	@Column(name = "name", nullable = false)
-	@NotBlank(message = "Nome da pessoa deve ser preenchido")
+	@NotBlank
 	private String name;
 	
 	@Column(name = "description", nullable = false)
-	@NotBlank(message = "Descrição da pessoa deve ser preenchido")
+	@NotBlank
 	private String description;
 	
 	@Column(name = "registration_date", nullable = false)

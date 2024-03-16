@@ -16,4 +16,5 @@ public record DiscardedBookDto(
 	LocalDateTime lastUpdateDate
 		
 ) {
+	
 }

@@ -17,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.leandro.library.dto.LoanDto;
+import br.com.leandro.library.model.Book;
 import br.com.leandro.library.model.Loan;
 import br.com.leandro.library.response.Response;
 import br.com.leandro.library.service.LoanService;
+import br.com.leandro.library.service.LogService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 /**
@@ -35,6 +38,9 @@ public class LoanController {
 	@Autowired
 	private LoanService loanService;
 	
+	@Autowired
+	private LogService logService;
+	
 	
 	/**
 	 * Salvar dados do empréstimo realizado.
@@ -45,13 +51,15 @@ public class LoanController {
 	 */
 	@PostMapping
 	public ResponseEntity<Response> saveLoan(
-		@RequestBody @Valid LoanDto loanDto
+		@RequestBody @Valid LoanDto loanDto,
+		HttpServletRequest request
 	) {
 		Loan loan = loanService.saveLoan(loanDto);
+		logService.saveLog(request, "Loan added: " + loan.getId());
 		Response resp = new Response();
 		resp.setId(loan.getId().toString());
 		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("Loan registered successfully.");
+		resp.setMessage("Loan successfully registered.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 	}
@@ -68,13 +76,15 @@ public class LoanController {
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<Response> updateLoan(
 		@PathVariable(name = "id") UUID id, 
-		@RequestBody @Valid LoanDto loanDto
+		@RequestBody @Valid LoanDto loanDto,
+		HttpServletRequest request
 	) {
-		loanService.updateLoan(id, loanDto);
+		Loan loan = loanService.updateLoan(id, loanDto);
+		logService.saveLog(request, "Loan updated: " + loan.getId());
 		Response resp = new Response();
 		resp.setId(id.toString());
 		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("Loan updated successfully.");
+		resp.setMessage("Loan successfully updated.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 	}
@@ -87,16 +97,26 @@ public class LoanController {
 	 * @param id Identificador chave primária.
 	 * @return Resposta padrão.
 	 */
-	@DeleteMapping(value = "/{id}")
+	@DeleteMapping(value = "/{id}/{delete}")
 	public ResponseEntity<Response> deleteLoan(
-		@PathVariable("id") UUID id
+		@PathVariable("id") UUID id,
+		@PathVariable("delete") boolean delete,
+		HttpServletRequest request
 	) {
-		loanService.deleteLoan(id);
 		Response resp = new Response();
 		resp.setId(id.toString());
-		resp.setStatus(String.valueOf(HttpStatus.OK.value()));
-		resp.setMessage("Excluído com sucesso.");
+		Loan loan = null;
+		if (delete) {
+			loan = loanService.deleteLoan(id);
+		    resp.setMessage("Loan successfully deleted.");
+		    logService.saveLog(request, "Loan deleted: " + loan.getId().toString());
+		} else {
+			loan = loanService.undeleteLoan(id);
+			resp.setMessage("Loan successfully undeleted.");
+			logService.saveLog(request, "Loan undeleted: " + loan.getId().toString());
+		}
 		resp.setTime(LocalDateTime.now());
+		resp.setStatus(String.valueOf(HttpStatus.OK.value()));
 		return ResponseEntity.status(HttpStatus.OK).body(resp);
 	}
 	

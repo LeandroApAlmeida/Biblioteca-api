@@ -1,4 +1,4 @@
-package br.com.leandro.library.system;
+package br.com.leandro.library.config;
 
 
 import jakarta.servlet.FilterChain;
@@ -17,6 +17,13 @@ import br.com.leandro.library.service.TokenService;
 
 import java.io.IOException;
 
+
+/**
+ * Filtro para a validação das credencias de acesso do usuário.
+ * 
+ * @since 1.0
+ * @author Leandro Ap. de Almeida
+ */
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 	
@@ -34,11 +41,19 @@ public class SecurityFilter extends OncePerRequestFilter {
     	HttpServletResponse response, 
     	FilterChain filterChain
 	) throws ServletException, IOException {
+    	// Obtém o token passado na conexão. Uso o token de acesso (Bearer) padrão,
+    	// que tem duração determinada.
         String token = recoverToken(request);
         if(token != null){
+        	// O Token deve ser validado. O nome do usuário foi passado como
+        	// subject. A validação retorna este nome de usuário. Desta forma
+        	// será recuperado o objeto do usuário para acesso aos dados.
             String userName = tokenService.validateToken(token);
             UserDetails user = userRepository.findByUserName(userName);
             if (user != null) {
+            	// Verifica se o usuário não foi bloqueado. Feito isso, segue
+            	// à validação de suas permissões de acesso para o endpoint
+            	// solicitado.
             	if (user.isEnabled()) {
 		            UsernamePasswordAuthenticationToken authentication = 
             		new UsernamePasswordAuthenticationToken(
@@ -56,6 +71,11 @@ public class SecurityFilter extends OncePerRequestFilter {
     }
     
     
+    /**
+     * Recupera o token do cabeçalho do HTTP.
+     * @param request Dados da conexão do usuário.
+     * @return Token extraído do cabeçalho HTTP.
+     */
     private String recoverToken(HttpServletRequest request){
         var authHeader = request.getHeader("Authorization");
         if(authHeader == null) return null;

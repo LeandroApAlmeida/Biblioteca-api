@@ -35,7 +35,7 @@ public class ReadingRecordController {
 		Response resp = new Response();
 		resp.setId(readingRecord.getId().toString());
 		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("Cadastrado com sucesso");
+		resp.setMessage("Reading record successfully registered.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 	}

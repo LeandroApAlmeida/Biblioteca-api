@@ -97,7 +97,7 @@ public class UserService implements UserDetailsService {
     	Optional<User> userO = userRepository.findById(id);
     	if (userO.isEmpty()) throw new ResourceNotFoundException(
 			id.toString(),
-			"Usuário não encontrado"
+			"User not found."
 		);
     	User user = userO.get();
     	if (user.getRole() != Role.ADMIN) {
@@ -106,7 +106,7 @@ public class UserService implements UserDetailsService {
     	} else {
     		throw new UserRegistrationException(
 				user.getId().toString(),
-    			"Não é possível excluir usuário administrador."
+    			"It is not possible to delete an administrator user."
 			);
     	}
     	return user;
@@ -117,7 +117,7 @@ public class UserService implements UserDetailsService {
     	Optional<User> userO = userRepository.findById(id);
     	if (userO.isEmpty()) throw new ResourceNotFoundException(
 			id.toString(),
-			"Usuário não encontrado"
+			"User not found."
 		);
     	User user = userO.get();
     	user.setEnabled(true);
@@ -127,7 +127,9 @@ public class UserService implements UserDetailsService {
     
     
     public List<User> getAllUsers() {
-    	return userRepository.findAll();
+    	List<User> usersList = userRepository.findAll();
+    	usersList.forEach(user -> user.setPassword(null));
+    	return usersList;
     }
     
     
@@ -135,9 +137,21 @@ public class UserService implements UserDetailsService {
     	Optional<User> userO = userRepository.findById(id);
     	if (userO.isEmpty()) throw new ResourceNotFoundException(
 			id.toString(),
-			"Usuário não encontrado"
+			"User not found."
 		);
-    	return userO.get();
+    	User user = userO.get();
+    	user.setPassword(null);
+    	return user;
+    }
+    
+    
+    public User getUser(String userName) {
+    	User user = (User) userRepository.findByUserName(userName);
+    	if (user == null) throw new ResourceNotFoundException(
+			userName,
+			"User not found."
+		);
+    	return user;
     }
     
     

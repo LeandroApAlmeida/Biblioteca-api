@@ -26,4 +26,5 @@ public record ReadingRecordDto(
     boolean isDeleted
     
 ) {
+	
 }

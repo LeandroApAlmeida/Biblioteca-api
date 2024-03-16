@@ -27,7 +27,7 @@ public class BookFormatService {
 		Optional<BookFormat> bookFormatO = bookFormatRepository.findById(id);
 		if (bookFormatO.isEmpty()) throw new ResourceNotFoundException(
 			String.valueOf(id),
-			"Formato do livro não encontrado."
+			"Book format not found."
 		);
 		return bookFormatO.get();
 	}

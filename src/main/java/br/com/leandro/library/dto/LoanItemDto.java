@@ -20,4 +20,5 @@ public record LoanItemDto(
 	LocalDateTime lastUpdateDate
 	
 ) {
+	
 }

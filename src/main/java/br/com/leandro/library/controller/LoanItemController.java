@@ -21,6 +21,8 @@ import br.com.leandro.library.dto.LoanItemDto;
 import br.com.leandro.library.model.LoanItem;
 import br.com.leandro.library.response.Response;
 import br.com.leandro.library.service.LoanItemService;
+import br.com.leandro.library.service.LogService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 /**
@@ -36,6 +38,9 @@ public class LoanItemController {
 	@Autowired
 	private LoanItemService loanItemService;
 	
+	@Autowired
+	private LogService logService;
+	
 	
 	/**
 	 * Salvar item de empréstimo.
@@ -46,18 +51,20 @@ public class LoanItemController {
 	 */
 	@PostMapping
 	public ResponseEntity<List<Response>> saveLoanItem(
-		@RequestBody @Valid List<LoanItemDto> loanItemDtoList
+		@RequestBody @Valid List<LoanItemDto> loanItemDtoList,
+		HttpServletRequest request
 	) {
 		List<LoanItem> loanItemList = loanItemService.saveLoanItem(loanItemDtoList);
 		List<Response> responseList = new ArrayList<>(loanItemList.size());
 		for (LoanItem loanItem : loanItemList) {
-			Response resp = new Response();
-			resp.setId(loanItem.getLoan().getId().toString());
-			resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-			resp.setMessage("Cadastrado com sucesso");
-			resp.setTime(LocalDateTime.now());
-			responseList.add(resp);
+			logService.saveLog(request, "Loan item added: " + loanItem.getBook().getTitle());
 		}
+		Response resp = new Response();
+		resp.setId("");
+		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
+		resp.setMessage("Loan item successfully registered.");
+		resp.setTime(LocalDateTime.now());
+		responseList.add(resp);
 		return ResponseEntity.status(HttpStatus.CREATED).body(responseList);
 	}
 	
@@ -73,13 +80,15 @@ public class LoanItemController {
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<Response> updateLoanItem(
 		@PathVariable("id") UUID id, 
-		@RequestBody @Valid LoanItemDto loanItemDto
+		@RequestBody @Valid LoanItemDto loanItemDto,
+		HttpServletRequest request
 	) {
-		loanItemService.updateLoanItem(id, loanItemDto);
+		LoanItem loanItem = loanItemService.updateLoanItem(id, loanItemDto);
+		logService.saveLog(request, "Loan item updated: " + loanItem.getBook().getTitle());
 		Response resp = new Response();
 		resp.setId(id.toString());
 		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("Alterado com sucesso");
+		resp.setMessage("Loan item successfully updated.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 	}
@@ -96,13 +105,15 @@ public class LoanItemController {
 	@DeleteMapping(value = "/{idLoan}/{idBook}")
 	public ResponseEntity<Response> deleteLoanItem(
 		@PathVariable("idLoan") UUID idLoan,
-		@PathVariable("idBook") UUID idBook
+		@PathVariable("idBook") UUID idBook,
+		HttpServletRequest request
 	) {
 		loanItemService.deleteLoanItem(idLoan, idBook);
+		logService.saveLog(request, "Loan item deleted: " + idLoan.toString());
 		Response resp = new Response();
 		resp.setId(idLoan.toString());
 		resp.setStatus(String.valueOf(HttpStatus.OK.value()));
-		resp.setMessage("Excluído com sucesso");
+		resp.setMessage("Loan item successfully deleted.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.OK).body(resp);
 	}

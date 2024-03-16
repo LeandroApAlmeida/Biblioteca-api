@@ -46,7 +46,7 @@ public class DiscardedBookController {
 	 * <br><br>
 	 * Nível de Acesso: <b><i>USER</i></b>
 	 * @param discardedBookDto Dados do livro descartado.
-	 * @return Resposta padrão.
+	 * @return Resposta padrão. 
 	 */
 	@PostMapping
 	public ResponseEntity<Response> saveDiscardedBook(
@@ -64,7 +64,7 @@ public class DiscardedBookController {
 		Response resp = new Response();
 		resp.setId(discardedBook.getId().toString());
 		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("Discarded book registered successfully.");
+		resp.setMessage("Discarded book successfully registered.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 	}
@@ -96,7 +96,7 @@ public class DiscardedBookController {
 		Response resp = new Response();
 		resp.setId(discardedBookDto.idBook().toString());
 		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("Discarded book updated successfully.");
+		resp.setMessage("Discarded book successfully updated.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 	}
@@ -125,7 +125,7 @@ public class DiscardedBookController {
 		Response resp = new Response();
 		resp.setId(id.toString());
 		resp.setStatus(String.valueOf(HttpStatus.OK.value()));
-		resp.setMessage("Discarded book deleted successfully.");
+		resp.setMessage("Discarded book successfully deleted.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.OK).body(resp);
 	}

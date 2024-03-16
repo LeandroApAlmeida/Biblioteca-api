@@ -18,4 +18,5 @@ public record PersonDto(
 	LocalDateTime lastUpdateDate
 	
 ) {
+	
 }

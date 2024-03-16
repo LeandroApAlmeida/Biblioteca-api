@@ -62,7 +62,7 @@ public class LoanService {
 	}
 	
 	
-	public void deleteLoan(UUID id) {
+	public Loan deleteLoan(UUID id) {
 		Optional<Loan> loanO = loanRepository.findById(id);
 		if (loanO.isEmpty()) throw new ResourceNotFoundException(
 			id.toString(),
@@ -71,6 +71,20 @@ public class LoanService {
 		Loan loan = loanO.get();
 		loan.setDeleted(true);
 		loanRepository.save(loan);
+		return loan;
+	}
+	
+	
+	public Loan undeleteLoan(UUID id) {
+		Optional<Loan> loanO = loanRepository.findById(id);
+		if (loanO.isEmpty()) throw new ResourceNotFoundException(
+			id.toString(),
+			"Loan not found."
+		);
+		Loan loan = loanO.get();
+		loan.setDeleted(false);
+		loanRepository.save(loan);
+		return loan;
 	}
 	
 	

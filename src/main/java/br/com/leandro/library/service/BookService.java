@@ -207,7 +207,7 @@ public class BookService {
 		}
 		if (invalidStatus) throw new ResourceNotFoundException(
 			"B001",
-			"Status inválido"
+			"Invalid status"
 		);
 		return booksList;
 	}

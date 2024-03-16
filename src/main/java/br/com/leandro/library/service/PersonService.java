@@ -40,7 +40,7 @@ public class PersonService {
 	}
 	
 	
-	public void deletePerson(UUID id) {
+	public Person deletePerson(UUID id) {
 		Optional<Person> personO = personRepository.findById(id);
 		if (personO.isEmpty()) throw new ResourceNotFoundException(
 			id.toString(),
@@ -49,10 +49,11 @@ public class PersonService {
 		Person person = personO.get();
 		person.setDeleted(true);
 		personRepository.save(person);
+		return person;
 	}
 	
 	
-	public void undeletePerson(UUID id) {
+	public Person undeletePerson(UUID id) {
 		Optional<Person> personO = personRepository.findById(id);
 		if (personO.isEmpty()) throw new ResourceNotFoundException(
 			id.toString(),
@@ -61,6 +62,7 @@ public class PersonService {
 		Person person = personO.get();
 		person.setDeleted(false);
 		personRepository.save(person);
+		return person;
 	}
 	
 	

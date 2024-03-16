@@ -10,26 +10,31 @@ import org.springframework.context.annotation.Primary;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Define o Timestamp no formato ISO-8601.
+ * Define o formato de Timestamp como ISO-8601.
+ * 
+ * @since 1.0
+ * @author Leandro Ap. de Almeida
  */
 @Configuration
 public class DateConfig {
-
 	
+	
+	/**Formato da data no padr&atilde;o ISO-8601.*/
     public static final String ISO_8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     
-    public static LocalDateTimeSerializer LOCAL_DATETIME_SERIALIZER = new LocalDateTimeSerializer(
+    /**Serializer para o formato ISO-8601.*/
+    public static LocalDateTimeSerializer SERIALIZER = new LocalDateTimeSerializer(
 		DateTimeFormatter.ofPattern(ISO_8601_FORMAT)
 	);
-
-
+    
+    
     @Bean
     @Primary
     ObjectMapper objectMapper() {
         JavaTimeModule module = new JavaTimeModule();
-        module.addSerializer(LOCAL_DATETIME_SERIALIZER);
+        module.addSerializer(SERIALIZER);
         return new ObjectMapper().registerModule(module);
     }
-
+    
     
 }

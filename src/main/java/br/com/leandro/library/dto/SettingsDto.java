@@ -15,4 +15,5 @@ public record SettingsDto(
     byte[] blob
     
 ) {
+	
 }

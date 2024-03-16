@@ -64,7 +64,7 @@ public class DonatedBookController {
 		Response resp = new Response();
 		resp.setId(donatedBook.getId().toString());
 		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("Donated book registered successfully.");
+		resp.setMessage("Donated book successfully registered.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 	}
@@ -96,7 +96,7 @@ public class DonatedBookController {
 		Response resp = new Response();
 		resp.setId(donatedBook.getId().toString());
 		resp.setStatus(String.valueOf(HttpStatus.CREATED.value()));
-		resp.setMessage("Donated book updated successfully.");
+		resp.setMessage("Donated book successfully updated.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.CREATED).body(resp);
 	}
@@ -124,7 +124,7 @@ public class DonatedBookController {
 		Response resp = new Response();
 		resp.setId(id.toString());
 		resp.setStatus(String.valueOf(HttpStatus.OK.value()));
-		resp.setMessage("Donated book registered successfully.");
+		resp.setMessage("Donated book successfully deleted.");
 		resp.setTime(LocalDateTime.now());
 		return ResponseEntity.status(HttpStatus.OK).body(resp);
 	}
