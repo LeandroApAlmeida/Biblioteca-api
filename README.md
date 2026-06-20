@@ -1,5 +1,7 @@
 <h3>API Java Spring Boot para gestão do acervo pessoal</h3>
 
+<br>
+
 Neste projeto implemento uma API Java Spring Boot para gerenciamento de meu acervo particular. Inclui as seguintes funcionalidades:
 
 1. Cadastro de livros e periódicos
