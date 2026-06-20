@@ -1,4 +1,6 @@
-API Java Spring Boot para gerenciamento de minha biblioteca particular. Inclui as seguintes funcionalidades:
+<h3>API Java Spring Boot para gestão do acervo pessoal</h3>
+
+API Java Spring Boot para gerenciamento de meu acervo particular. Inclui as seguintes funcionalidades:
 
 1. Cadastro de livros e periódicos
 2. Registro de livros descartados
